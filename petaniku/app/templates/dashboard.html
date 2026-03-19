@@ -3,159 +3,109 @@
 {% block title %}Dashboard - PetaniKu{% endblock %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto p-6">
-    <!-- Header Modern -->
-    <div class="mb-10 relative">
-        <div class="absolute inset-0 bg-gradient-to-r from-teal-100 to-green-100 rounded-2xl blur-2xl opacity-40"></div>
-        <div class="relative bg-white rounded-2xl p-8 border border-emerald-100 shadow-lg">
-            <div class="flex items-center justify-between">
+<div class="max-w-5xl mx-auto p-6 space-y-8">
+    <!-- Header -->
+    <div class="mb-8 relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-green-100 to-teal-100 rounded-2xl blur-2xl opacity-40"></div>
+        <div class="relative bg-white rounded-2xl p-8 border border-teal-100">
+            <h1 class="text-5xl font-black mb-2" style="background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌾 PetaniKu</h1>
+            <p class="text-gray-600 text-xl">Kelola tanaman dan kegiatan pertanian Anda dengan mudah</p>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="kartu bg-gradient-to-br from-emerald-50 to-teal-50">
+            <h2 class="text-4xl mb-2">🌱</h2>
+            <p class="text-gray-600 text-lg">Total Tanaman</p>
+            <p class="text-4xl font-bold text-teal-700">{{ tanaman_list|length }}</p>
+        </div>
+        <div class="kartu bg-gradient-to-br from-amber-50 to-orange-50">
+            <h2 class="text-4xl mb-2">💊</h2>
+            <p class="text-gray-600 text-lg">Pupuk Minggu Ini</p>
+            <p class="text-4xl font-bold text-amber-700">{{ pupuk_minggu_ini }}</p>
+        </div>
+    </div>
+
+    <!-- Jadwal Hari Ini -->
+    {% if jadwal_hari_ini %}
+    <div class="kartu">
+        <h2 class="text-2xl font-bold mb-6">📅 Jadwal Hari Ini</h2>
+        <div class="space-y-3">
+            {% for jadwal in jadwal_hari_ini %}
+            <div class="flex items-center justify-between p-4 bg-blue-50 rounded-xl border-l-4 border-blue-500">
                 <div>
-                    <h1 class="text-4xl font-black mb-2">🌾 PetaniKu</h1>
-                    <p class="text-xl text-gray-600">Selamat pagi, Petani Hebat! 👋</p>
-                    <p class="text-sm text-gray-500 mt-2">{{ today.strftime('%A, %d %B %Y') }}</p>
+                    <p class="font-bold text-lg">{{ jadwal.kegiatan }}</p>
+                    <p class="text-sm text-gray-600">⏰ {{ jadwal.jam or 'Fleksibel' }}</p>
                 </div>
-                <div class="text-7xl">🌱</div>
+                <input type="checkbox" class="w-6 h-6 rounded" onchange="markComplete({{ jadwal.id }})">
             </div>
+            {% endfor %}
         </div>
     </div>
-    
-    <!-- Grid Kartu Info Utama -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <!-- Kartu 1: Hari Ini -->
-        <div class="kartu card-gradient">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-2xl font-bold">📋 Hari Ini</h2>
-                <span class="text-3xl">✓</span>
-            </div>
-            {% if jadwal_hari_ini %}
-                <div class="space-y-3">
-                    {% for jadwal in jadwal_hari_ini %}
-                    <div class="bg-gradient-to-r from-teal-50 to-cyan-50 p-4 rounded-lg border-l-4 border-teal-400 hover:shadow-md transition">
-                        <p class="font-bold text-teal-700">⏰ {{ jadwal.jam }}</p>
-                        <p class="text-gray-700 mt-1">{{ jadwal.kegiatan }}</p>
-                        <button onclick="markJadwalDone({{ jadwal.id }})" 
-                                class="btn-besar btn-hijau text-sm w-full mt-3"
-                                id="btn-{{ jadwal.id }}">
-                            {% if jadwal.sudah_dilakukan %}✓ SELESAI{% else %}TANDAI SELESAI{% endif %}
-                        </button>
-                    </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p class="text-gray-500 text-center py-6">Tidak ada kegiatan hari ini</p>
-            {% endif %}
-        </div>
-        
-        <!-- Kartu 2: Pupuk Minggu Ini -->
-        <div class="kartu card-gradient">
-            <h2 class="text-2xl font-bold mb-4">💊 Pupuk Minggu Ini</h2>
-            <div class="text-center py-8">
-                <p class="text-6xl font-bold text-transparent bg-gradient-to-r from-teal-500 to-emerald-500 bg-clip-text">{{ pupuk_minggu_ini }}</p>
-                <p class="text-gray-600 mt-4">Kali pemberian pupuk</p>
-            </div>
-            {% if log_terakhir %}
-            <div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-5 rounded-lg mt-6 border-l-4 border-blue-400">
-                <p class="text-sm text-gray-600 mb-2">Terakhir:</p>
-                <p class="font-bold text-gray-800">{{ log_terakhir.tanaman.nama }}</p>
-                <p class="text-sm text-gray-700 mt-1">{{ log_terakhir.detail }} • {{ log_terakhir.dosis }}</p>
-                <p class="text-xs text-gray-500 mt-2">{{ log_terakhir.tanggal.strftime('%d %B %Y') }}</p>
-            </div>
-            {% endif %}
+    {% endif %}
+
+    <!-- Pupuk Terakhir -->
+    {% if log_terakhir %}
+    <div class="kartu">
+        <h2 class="text-2xl font-bold mb-4">💊 Pupuk Terakhir</h2>
+        <div class="bg-amber-50 p-6 rounded-xl border-2 border-amber-200">
+            <p class="text-xl font-bold text-amber-900">{{ log_terakhir.tanaman.nama }}</p>
+            <p class="text-gray-700 mt-2"><span class="font-bold">Pupuk:</span> {{ log_terakhir.detail }}</p>
+            <p class="text-gray-700"><span class="font-bold">Dosis:</span> {{ log_terakhir.dosis }}</p>
+            <p class="text-sm text-gray-600 mt-4">📅 {{ log_terakhir.tanggal.strftime('%d %B %Y') }}</p>
         </div>
     </div>
-    
-    <!-- Grid Kartu 2 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <!-- Kartu 3: Jadwal Besok -->
-        <div class="kartu card-gradient">
-            <h2 class="text-2xl font-bold mb-4">🗓️ Jadwal Besok</h2>
-            {% if jadwal_besok %}
-                <div class="space-y-3">
-                    {% for jadwal in jadwal_besok %}
-                    <div class="bg-gradient-to-r from-amber-50 to-yellow-50 p-4 rounded-lg border-l-4 border-amber-400">
-                        <p class="font-bold text-amber-700">⏰ {{ jadwal.jam }}</p>
-                        <p class="text-gray-700 mt-1">{{ jadwal.kegiatan }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-                <button onclick="window.location.href='{{ url_for('main.jadwal') }}'" 
-                        class="btn-besar btn-kuning w-full mt-6">
-                    + TAMBAH RENCANA
-                </button>
-            {% else %}
-                <p class="text-gray-500 text-center py-8">Belum ada rencana untuk besok</p>
-                <button onclick="window.location.href='{{ url_for('main.jadwal') }}'" 
-                        class="btn-besar btn-kuning w-full">
-                    📅 RENCANAKAN BESOK
-                </button>
-            {% endif %}
-        </div>
-        
-        <!-- Kartu 4: Eksperimen Aktif -->
-        {% if eksperimen_aktif %}
-        <div class="kartu" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%); border-color: #e9d5ff;">
-            <h2 class="text-2xl font-bold mb-4">🔬 Eksperimen Aktif</h2>
-            <div class="space-y-3">
-                {% for exp in eksperimen_aktif %}
-                <div class="bg-white p-4 rounded-lg border-l-4 border-purple-400">
-                    <p class="font-bold text-purple-700">{{ exp.tanaman.nama }}</p>
-                    <p class="text-sm text-gray-700 mt-1">🌿 Pupuk: <strong>{{ exp.pupuk_digunakan }}</strong></p>
-                    <p class="text-xs text-gray-600 mt-2">Pantauan 3 bulan: <strong>{{ (exp.tanggal_mulai.replace(day=1) + timedelta(days=90)).strftime('%d/%m') }}</strong></p>
-                </div>
-                {% endfor %}
+    {% endif %}
+
+    <!-- Eksperimen Aktif -->
+    {% if eksperimen_aktif %}
+    <div class="kartu">
+        <h2 class="text-2xl font-bold mb-6">🧪 Eksperimen Aktif</h2>
+        <div class="space-y-4">
+            {% for eks in eksperimen_aktif %}
+            <div class="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border-2 border-purple-200">
+                <p class="font-bold text-lg text-purple-900">{{ eks.tanaman.nama }}</p>
+                <p class="text-gray-700 mt-2">Pupuk: <span class="font-semibold">{{ eks.pupuk_digunakan }}</span></p>
+                <p class="text-sm text-gray-600">Dosis: {{ eks.dosis }}</p>
             </div>
-            <button onclick="window.location.href='{{ url_for('main.eksperimen') }}'" 
-                    class="btn-besar btn-hijau w-full mt-6">
-                + LIHAT DETAIL
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Jadwal Besok -->
+    {% if jadwal_besok %}
+    <div class="kartu">
+        <h2 class="text-2xl font-bold mb-6">⏳ Jadwal Besok</h2>
+        <div class="space-y-3">
+            {% for jadwal in jadwal_besok %}
+            <div class="p-4 bg-cyan-50 rounded-xl border-l-4 border-cyan-500">
+                <p class="font-bold text-lg">{{ jadwal.kegiatan }}</p>
+                <p class="text-sm text-gray-600">⏰ {{ jadwal.jam or 'Fleksibel' }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- CTA untuk menambah tanaman -->
+    <div class="relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-teal-100 to-emerald-100 rounded-2xl blur-2xl opacity-40"></div>
+        <div class="relative kartu bg-gradient-to-r from-teal-50 to-emerald-50 text-center py-8">
+            <h2 class="text-2xl font-bold mb-4">🌿 Mulai Catat Kegiatan</h2>
+            <button onclick="window.location.href='{{ url_for('main.catat_kegiatan') }}'" class="btn-besar btn-hijau">
+                ✍️ CATAT SEKARANG
             </button>
         </div>
-        {% else %}
-        <div class="kartu" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%); border-color: #e9d5ff;">
-            <h2 class="text-2xl font-bold text-purple-700 mb-4">🔬 Mulai Eksperimen</h2>
-            <p class="text-gray-700 mb-6">Track penggunaan pupuk dan lihat hasilnya setelah 3 & 6 bulan</p>
-            <button onclick="window.location.href='{{ url_for('main.eksperimen') }}'" 
-                    class="btn-besar btn-hijau w-full">
-                + EKSPERIMEN BARU
-            </button>
-        </div>
-        {% endif %}
-    </div>
-    
-    <!-- Quick Action Buttons -->
-    <div class="grid grid-cols-2 gap-4 mb-4">
-        <button onclick="window.location.href='{{ url_for('main.catat_kegiatan') }}'" 
-                class="btn-besar btn-hijau">
-            ✍️ CATAT SEKARANG
-        </button>
-        <button onclick="window.location.href='{{ url_for('main.riwayat') }}'" 
-                class="btn-besar btn-kuning">
-            📜 LIHAT RIWAYAT
-        </button>
     </div>
 </div>
 
 <script>
-function markJadwalDone(jadwalId) {
-    fetch(`/api/jadwal/${jadwalId}/done`, { method: 'POST' })
+function markComplete(jadwalId) {
+    fetch(`/api/jadwal/${jadwalId}/selesai`, { method: 'POST' })
         .then(r => r.json())
-        .then(data => {
-            const btn = document.getElementById(`btn-${jadwalId}`);
-            if (data.sudah_dilakukan) {
-                btn.textContent = '✓ SELESAI';
-                btn.classList.add('bg-green-700', 'text-white');
-                btn.classList.remove('btn-hijau');
-            } else {
-                btn.textContent = 'TANDAI SELESAI';
-                btn.classList.remove('bg-green-700', 'text-white');
-                btn.classList.add('btn-hijau');
-            }
-        });
+        .then(data => console.log('Jadwal updated'));
 }
-
-const timedelta = (days) => {
-    const d = new Date();
-    d.setDate(d.getDate() + days);
-    return d;
-};
 </script>
 {% endblock %}

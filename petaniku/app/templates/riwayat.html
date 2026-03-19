@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Riwayat - PetaniKu{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto p-6">
+    <!-- Header -->
+    <div class="mb-8 relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-100 to-cyan-100 rounded-2xl blur-2xl opacity-40"></div>
+        <div class="relative bg-white rounded-2xl p-8 border border-blue-100">
+            <h1 class="text-4xl font-black mb-2">📜 Riwayat Lengkap</h1>
+            <p class="text-gray-600">Lihat semua catatan kegiatan Anda</p>
+        </div>
+    </div>
+    
+    <!-- Filter & Search -->
+    <div class="kartu card-gradient mb-8">
+        <h2 class="text-2xl font-bold mb-6">🔍 Cari & Filter</h2>
+        
+        <form method="GET" class="space-y-4">
+            <!-- Search -->
+            <div>
+                <label class="block mb-3">🔎 Cari Catatan</label>
+                <input type="text" name="search" value="{{ search }}" 
+                       placeholder="cth: NPK, Mangga, Januari">
+            </div>
+            
+            <!-- Filter -->
+            <div>
+                <label class="block mb-4">📌 Filter Jenis</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-gray-100">
+                        <input type="radio" name="filter" value="semua" 
+                               {% if filter_jenis == 'semua' %}checked{% endif %} 
+                               onchange="this.form.submit()">
+                        <span>Semua</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-gray-100">
+                        <input type="radio" name="filter" value="pupuk" 
+                               {% if filter_jenis == 'pupuk' %}checked{% endif %}
+                               onchange="this.form.submit()">
+                        <span>💊 Pupuk</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-gray-100">
+                        <input type="radio" name="filter" value="siram" 
+                               {% if filter_jenis == 'siram' %}checked{% endif %}
+                               onchange="this.form.submit()">
+                        <span>💧 Siram</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-gray-100">
+                        <input type="radio" name="filter" value="panen" 
+                               {% if filter_jenis == 'panen' %}checked{% endif %}
+                               onchange="this.form.submit()">
+                        <span>🌾 Panen</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-gray-100">
+                        <input type="radio" name="filter" value="pestisida" 
+                               {% if filter_jenis == 'pestisida' %}checked{% endif %}
+                               onchange="this.form.submit()">
+                        <span>🚫 Pestisida</span>
+                    </label>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-besar btn-hijau w-full">
+                🔍 CARI
+            </button>
+        </form>
+    </div>
+    
+    <!-- Daftar Riwayat -->
+    <h2 class="text-2xl font-bold mb-6">📋 Catatan Kegiatan</h2>
+    
+    {% if log_list %}
+        <div class="space-y-4 mb-4">
+            {% for log in log_list %}
+            <div class="kartu">
+                <div class="flex justify-between items-start gap-4">
+                    <div class="flex-1">
+                        <p class="text-xl font-bold text-teal-700">
+                            🌱 {{ log.tanaman.nama }}
+                        </p>
+                        <p class="text-gray-700 mt-2">
+                            <span class="font-bold">Jenis:</span>
+                            {% if log.jenis == 'pupuk' %}💊
+                            {% elif log.jenis == 'siram' %}💧
+                            {% elif log.jenis == 'panen' %}🌾
+                            {% elif log.jenis == 'pestisida' %}🚫
+                            {% endif %}
+                            {{ log.jenis|upper }}
+                        </p>
+                        
+                        {% if log.detail %}
+                        <p class="text-gray-700">
+                            <span class="font-bold">Detail:</span> {{ log.detail }}
+                        </p>
+                        {% endif %}
+                        
+                        {% if log.dosis %}
+                        <p class="text-gray-700">
+                            <span class="font-bold">Dosis:</span> {{ log.dosis }}
+                        </p>
+                        {% endif %}
+                        
+                        {% if log.catatan %}
+                        <p class="text-gray-600 mt-2 p-3 bg-amber-50 rounded border-l-4 border-amber-400 text-sm">
+                            <span class="font-bold">Catatan:</span> {{ log.catatan }}
+                        </p>
+                        {% endif %}
+                        
+                        <p class="text-sm text-gray-500 mt-3">
+                            📅 {{ log.tanggal.strftime('%d %B %Y') }}
+                        </p>
+                    </div>
+                    <button onclick="deleteLog({{ log.id }})" 
+                            class="btn-besar bg-red-500 text-white">
+                        🗑️
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="kartu text-center py-12 bg-gray-50">
+            <p class="text-xl text-gray-600">📭 Belum ada catatan</p>
+            <button onclick="window.location.href='{{ url_for('main.catat_kegiatan') }}'" 
+                    class="btn-besar btn-hijau mt-6">
+                ✍️ CATAT SEKARANG
+            </button>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function deleteLog(logId) {
+    if (confirm('Yakin hapus catatan ini?')) {
+        fetch(`/api/log/${logId}/delete`, { method: 'POST' })
+            .then(r => r.json())
+            .then(() => window.location.reload());
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Jadwal - PetaniKu{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto p-6">
+    <!-- Header -->
+    <div class="mb-8 relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-100 to-cyan-100 rounded-2xl blur-2xl opacity-40"></div>
+        <div class="relative bg-white rounded-2xl p-8 border border-blue-100">
+            <h1 class="text-4xl font-black mb-2">📅 Jadwal Kegiatan</h1>
+            <p class="text-gray-600">Atur jadwal perawatan tanaman Anda</p>
+        </div>
+    </div>
+
+    <!-- Form Buat Jadwal -->
+    <div class="kartu card-gradient mb-8">
+        <h2 class="text-2xl font-bold mb-6">➕ Buat Jadwal Baru</h2>
+        <form method="POST" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block mb-3">📅 Tanggal</label>
+                    <input type="date" name="tanggal" required>
+                </div>
+                <div>
+                    <label class="block mb-3">🕐 Jam (Opsional)</label>
+                    <input type="time" name="jam">
+                </div>
+            </div>
+            <div>
+                <label class="block mb-3">📝 Kegiatan</label>
+                <input type="text" name="kegiatan" placeholder="cth: Siram tanaman mangga..." required>
+            </div>
+            <button type="submit" class="btn-besar btn-hijau w-full">
+                ✅ BUAT JADWAL
+            </button>
+        </form>
+    </div>
+
+    <!-- Daftar Jadwal -->
+    <h2 class="text-2xl font-bold mb-6">📋 Daftar Jadwal</h2>
+    
+    {% if jadwal_list %}
+        <div class="space-y-4">
+            {% for jadwal in jadwal_list %}
+            <div class="kartu flex justify-between items-start gap-4">
+                <div class="flex-1">
+                    <p class="text-xl font-bold text-teal-700">{{ jadwal.kegiatan }}</p>
+                    <p class="text-gray-700 mt-2">
+                        📅 {{ jadwal.tanggal.strftime('%d %B %Y') }}
+                        {% if jadwal.jam %}<br>🕐 {{ jadwal.jam }}{% endif %}
+                    </p>
+                    <div class="mt-4 flex gap-2">
+                        {% if jadwal.sudah_dilakukan %}
+                        <span class="px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-bold">✅ SELESAI</span>
+                        {% else %}
+                        <span class="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-bold">⏳ BELUM</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="toggleJadwal({{ jadwal.id }})" class="btn-besar btn-amber text-sm">
+                        ✓
+                    </button>
+                    <button onclick="deleteJadwal({{ jadwal.id }})" class="btn-besar bg-red-500 text-white text-sm">
+                        🗑️
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="kartu text-center py-12 bg-gray-50">
+            <p class="text-xl text-gray-600">📭 Belum ada jadwal</p>
+            <p class="text-gray-500 mt-2">Buat jadwal pertama untuk tanaman Anda</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function toggleJadwal(jadwalId) {
+    fetch(`/api/jadwal/${jadwalId}/selesai`, { method: 'POST' })
+        .then(r => r.json())
+        .then(() => window.location.reload());
+}
+
+function deleteJadwal(jadwalId) {
+    if (confirm('Yakin hapus jadwal ini?')) {
+        fetch(`/api/jadwal/${jadwalId}/delete`, { method: 'POST' })
+            .then(r => r.json())
+            .then(() => window.location.reload());
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Catat Kegiatan - PetaniKu{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto p-6">
+    <!-- Header -->
+    <div class="mb-8 relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-amber-100 to-orange-100 rounded-2xl blur-2xl opacity-40"></div>
+        <div class="relative bg-white rounded-2xl p-8 border border-amber-100">
+            <h1 class="text-4xl font-black mb-2">✍️ Catat Kegiatan</h1>
+            <p class="text-gray-600">Catat semua kegiatan perawatan tanaman Anda</p>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="kartu card-gradient mb-8">
+        <form method="POST" class="space-y-6">
+            <!-- Pilih Tanaman -->
+            <div>
+                <label class="block mb-3">🌱 Pilih Tanaman</label>
+                <select name="tanaman_id" required>
+                    <option value="">-- Pilih Tanaman --</option>
+                    {% for tanaman in tanaman_list %}
+                    <option value="{{ tanaman.id }}">{{ tanaman.nama }} ({{ tanaman.jenis }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Tanggal -->
+            <div>
+                <label class="block mb-3">📅 Tanggal Kegiatan</label>
+                <input type="date" name="tanggal" required>
+            </div>
+
+            <!-- Jenis Kegiatan -->
+            <div>
+                <label class="block mb-3">📌 Jenis Kegiatan</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <label class="flex items-center gap-2 cursor-pointer p-3 rounded-lg border-2 border-teal-200 hover:bg-teal-50">
+                        <input type="radio" name="jenis" value="pupuk" required>
+                        <span>💊 Pupuk</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer p-3 rounded-lg border-2 border-teal-200 hover:bg-teal-50">
+                        <input type="radio" name="jenis" value="siram" required>
+                        <span>💧 Siram</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer p-3 rounded-lg border-2 border-teal-200 hover:bg-teal-50">
+                        <input type="radio" name="jenis" value="panen" required>
+                        <span>🌾 Panen</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer p-3 rounded-lg border-2 border-teal-200 hover:bg-teal-50">
+                        <input type="radio" name="jenis" value="pestisida" required>
+                        <span>🚫 Pestisida</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Detail -->
+            <div>
+                <label class="block mb-3">📝 Detail Kegiatan</label>
+                <textarea name="detail" rows="3" placeholder="cth: Pupuk NPK 16-16-16..."></textarea>
+            </div>
+
+            <!-- Dosis -->
+            <div>
+                <label class="block mb-3">⚖️ Dosis / Jumlah</label>
+                <input type="text" name="dosis" placeholder="cth: 2 kg, 5 liter...">
+            </div>
+
+            <!-- Catatan -->
+            <div>
+                <label class="block mb-3">📌 Catatan Tambahan</label>
+                <textarea name="catatan" rows="3" placeholder="Catatan penting apapun..."></textarea>
+            </div>
+
+            <!-- Tombol -->
+            <div class="flex gap-4">
+                <button type="submit" class="btn-besar btn-hijau flex-1">
+                    ✅ SIMPAN KEGIATAN
+                </button>
+                <button type="reset" class="btn-besar bg-gray-300 text-gray-800 flex-1">
+                    🔄 BERSIHKAN
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

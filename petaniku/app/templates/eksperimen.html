@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Eksperimen - PetaniKu{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto p-6">
+    <!-- Header -->
+    <div class="mb-8 relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl blur-2xl opacity-40"></div>
+        <div class="relative bg-white rounded-2xl p-8 border border-purple-100">
+            <h1 class="text-4xl font-black mb-2">🧪 Eksperimen Pupuk</h1>
+            <p class="text-gray-600">Lacak eksperimen pupuk 3 bulan dan 6 bulan</p>
+        </div>
+    </div>
+
+    <!-- Form Buat Eksperimen -->
+    <div class="kartu card-gradient mb-8">
+        <h2 class="text-2xl font-bold mb-6">➕ Eksperimen Baru</h2>
+        <form method="POST" class="space-y-4">
+            <!-- Pilih Tanaman -->
+            <div>
+                <label class="block mb-3">🌱 Tanaman</label>
+                <select name="tanaman_id" required>
+                    <option value="">-- Pilih Tanaman --</option>
+                    {% for tanaman in tanaman_list %}
+                    <option value="{{ tanaman.id }}">{{ tanaman.nama }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Pupuk Digunakan -->
+            <div>
+                <label class="block mb-3">💊 Pupuk yang Digunakan</label>
+                <input type="text" name="pupuk_digunakan" placeholder="cth: NPK 16-16-16" required>
+            </div>
+
+            <!-- Dosis -->
+            <div>
+                <label class="block mb-3">⚖️ Dosis</label>
+                <input type="text" name="dosis" placeholder="cth: 2kg per aplikasi" required>
+            </div>
+
+            <!-- Target 3 Bulan -->
+            <div>
+                <label class="block mb-3">🎯 Target 3 Bulan</label>
+                <textarea name="target_3bln" rows="2" placeholder="Target yang ingin dicapai dalam 3 bulan pertama..."></textarea>
+            </div>
+
+            <!-- Target 6 Bulan -->
+            <div>
+                <label class="block mb-3">🎯 Target 6 Bulan</label>
+                <textarea name="target_6bln" rows="2" placeholder="Target yang ingin dicapai dalam 6 bulan..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-besar btn-hijau w-full">
+                ✅ MULAI EKSPERIMEN
+            </button>
+        </form>
+    </div>
+
+    <!-- Daftar Eksperimen -->
+    <h2 class="text-2xl font-bold mb-6">📊 Daftar Eksperimen</h2>
+    
+    {% if eksperimen_list %}
+        <div class="space-y-6">
+            {% for eks in eksperimen_list %}
+            <div class="kartu bg-gradient-to-br from-purple-50 to-pink-50">
+                <div class="mb-6">
+                    <p class="text-2xl font-bold text-purple-900">🌱 {{ eks.tanaman.nama }}</p>
+                    <p class="text-gray-700 mt-2"><span class="font-bold">Pupuk:</span> {{ eks.pupuk_digunakan }}</p>
+                    <p class="text-gray-700"><span class="font-bold">Dosis:</span> {{ eks.dosis }}</p>
+                    <p class="text-sm text-gray-600 mt-2">📅 Mulai: {{ eks.tanggal_mulai.strftime('%d %B %Y') }}</p>
+                </div>
+
+                <!-- Status -->
+                <div class="mb-6 p-4 bg-white rounded-xl border-2 border-purple-200">
+                    <p class="font-bold mb-3">📍 Status</p>
+                    <form method="POST" action="{{ url_for('main.update_eksperimen', id=eks.id) }}">
+                        <select name="status" onchange="this.form.submit()" class="p-2 rounded border-2 border-purple-300">
+                            <option value="aktif" {% if eks.status == 'aktif' %}selected{% endif %}>🔄 Aktif</option>
+                            <option value="selesai" {% if eks.status == 'selesai' %}selected{% endif %}>✅ Selesai</option>
+                            <option value="dibatalkan" {% if eks.status == 'dibatalkan' %}selected{% endif %}>❌ Dibatalkan</option>
+                        </select>
+                    </form>
+                </div>
+
+                <!-- Target & Hasil 3 Bulan -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                    <div class="p-4 bg-blue-50 rounded-xl border-l-4 border-blue-500">
+                        <p class="font-bold text-blue-900 mb-2">🎯 Target 3 Bulan</p>
+                        <p class="text-gray-700 text-sm">{{ eks.target_3bln or 'Belum diset' }}</p>
+                    </div>
+                    <div class="p-4 bg-green-50 rounded-xl border-l-4 border-green-500">
+                        <p class="font-bold text-green-900 mb-2">📝 Hasil 3 Bulan</p>
+                        {% if eks.hasil_3bln %}
+                        <p class="text-gray-700 text-sm">{{ eks.hasil_3bln }}</p>
+                        {% else %}
+                        <form method="POST" action="{{ url_for('main.update_eksperimen', id=eks.id) }}" class="flex gap-2">
+                            <input type="text" name="hasil_3bln" placeholder="Input hasil..." class="flex-1 px-2 py-1 rounded text-sm">
+                            <button type="submit" class="px-3 py-1 bg-green-500 text-white rounded text-sm">✓</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Target & Hasil 6 Bulan -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="p-4 bg-amber-50 rounded-xl border-l-4 border-amber-500">
+                        <p class="font-bold text-amber-900 mb-2">🎯 Target 6 Bulan</p>
+                        <p class="text-gray-700 text-sm">{{ eks.target_6bln or 'Belum diset' }}</p>
+                    </div>
+                    <div class="p-4 bg-orange-50 rounded-xl border-l-4 border-orange-500">
+                        <p class="font-bold text-orange-900 mb-2">📝 Hasil 6 Bulan</p>
+                        {% if eks.hasil_6bln %}
+                        <p class="text-gray-700 text-sm">{{ eks.hasil_6bln }}</p>
+                        {% else %}
+                        <form method="POST" action="{{ url_for('main.update_eksperimen', id=eks.id) }}" class="flex gap-2">
+                            <input type="text" name="hasil_6bln" placeholder="Input hasil..." class="flex-1 px-2 py-1 rounded text-sm">
+                            <button type="submit" class="px-3 py-1 bg-orange-500 text-white rounded text-sm">✓</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="kartu text-center py-12 bg-gray-50">
+            <p class="text-xl text-gray-600">🧪 Belum ada eksperimen</p>
+            <p class="text-gray-500 mt-2">Mulai eksperimen pupuk pertama Anda</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

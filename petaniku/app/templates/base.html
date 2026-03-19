@@ -3,208 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}PetaniKu - Catatan Pertanian{% endblock %}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>{% block title %}PetaniKu{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js"></script>
     <style>
-        * {
-            font-family: 'Poppins', 'Plus Jakarta Sans', sans-serif;
-        }
-        
         :root {
-            --hijau-primary: #0f766e;
-            --hijau-light: #14b8a6;
-            --hijau-dark: #115e59;
-            --kuning-primary: #f59e0b;
-            --kuning-light: #fbbf24;
-            --bg-soft: #f0fdf4;
-            --border-color: #d1fae5;
+            --primary: #0f766e;
+            --primary-light: #14b8a6;
+            --accent: #f59e0b;
+            --accent-light: #fcd34d;
+            --success: #10b981;
+            --danger: #ef4444;
         }
-        
-        body {
-            background: linear-gradient(135deg, #f0fdf4 0%, #f0f9ff 100%);
-            font-size: 18px;
-            letter-spacing: 0.3px;
-            line-height: 1.6;
-            color: #1f2937;
-            min-height: 100vh;
-        }
-        
-        h1 { 
-            font-size: 36px; 
-            font-weight: 800; 
-            background: linear-gradient(135deg, var(--hijau-primary) 0%, var(--hijau-light) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.5px;
-        }
-        
-        h2 { 
-            font-size: 28px; 
-            font-weight: 700;
-            color: var(--hijau-primary);
-        }
-        
-        h3 { 
-            font-size: 22px; 
-            font-weight: 600;
-            color: var(--hijau-dark);
-        }
-        
-        p, span { font-size: 18px; }
-        label { font-size: 18px; font-weight: 600; }
-        
-        .btn-besar {
-            padding: 18px 36px;
-            font-size: 18px;
-            border-radius: 14px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .btn-besar:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-hijau {
-            background: linear-gradient(135deg, var(--hijau-primary) 0%, var(--hijau-light) 100%);
-            color: white;
-        }
-        
-        .btn-hijau:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(15, 118, 110, 0.3);
-        }
-        
-        .btn-kuning {
-            background: linear-gradient(135deg, var(--kuning-primary) 0%, var(--kuning-light) 100%);
-            color: white;
-            font-weight: 700;
-        }
-        
-        .btn-kuning:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
-        }
-        
-        .kartu {
-            background: white;
-            border-radius: 18px;
-            padding: 24px;
-            margin-bottom: 20px;
-            border: 2px solid var(--border-color);
-            box-shadow: 0 4px 20px rgba(15, 118, 110, 0.08);
-            transition: all 0.3s ease;
-        }
-        
-        .kartu:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(15, 118, 110, 0.15);
-        }
-        
-        input, select, textarea {
-            font-size: 18px;
-            padding: 14px 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            width: 100%;
-            margin-bottom: 16px;
-            background-color: #fafaf9;
+
+        * {
             font-family: 'Poppins', sans-serif;
-            transition: all 0.3s ease;
         }
-        
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--hijau-light);
-            background-color: white;
-            box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1);
+
+        h1, h2, h3, .font-black {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
         }
-        
-        .navbar-bottom {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-top: 1px solid var(--border-color);
-            padding: 14px 0 20px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            z-index: 100;
-            box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.08);
-            backdrop-filter: blur(10px);
+
+        body {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            min-height: 100vh;
+            font-size: 18px;
         }
-        
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 8px;
-            text-decoration: none;
-            color: #6b7280;
-            cursor: pointer;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 700;
-            transition: all 0.3s ease;
-            margin: 0 6px;
+
+        .btn-besar {
+            @apply px-6 py-3 rounded-xl font-bold text-lg transition-all duration-300;
+            @apply border-2 border-transparent;
         }
-        
-        .nav-item:hover {
-            background-color: var(--bg-soft);
-            color: var(--hijau-primary);
-            transform: translateY(-2px);
+
+        .btn-hijau {
+            @apply bg-gradient-to-r from-teal-600 to-emerald-600 text-white;
+            @apply shadow-lg hover:shadow-xl hover:scale-105;
         }
-        
-        .nav-item.active {
-            background: linear-gradient(135deg, var(--hijau-primary) 0%, var(--hijau-light) 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(15, 118, 110, 0.3);
+
+        .btn-amber {
+            @apply bg-gradient-to-r from-amber-500 to-orange-500 text-white;
+            @apply shadow-lg hover:shadow-xl hover:scale-105;
         }
-        
-        .nav-icon {
-            font-size: 28px;
+
+        .kartu {
+            @apply bg-white rounded-2xl p-6 shadow-md border border-teal-100;
+            @apply transition-all duration-300 hover:shadow-lg;
         }
-        
+
+        .kartu:hover {
+            @apply border-teal-300;
+        }
+
         .card-gradient {
-            background: linear-gradient(135deg, rgba(20, 184, 166, 0.05) 0%, rgba(15, 118, 110, 0.05) 100%);
+            @apply bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6;
+            @apply border border-blue-200 shadow-md;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        input[type="email"],
+        input[type="number"],
+        select,
+        textarea {
+            @apply w-full px-4 py-3 rounded-xl border-2 border-teal-100;
+            @apply focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200;
+            @apply transition-all duration-300 text-lg;
+        }
+
+        label {
+            @apply block font-semibold text-gray-800 mb-3 text-lg;
+        }
+
+        .nav-bottom {
+            @apply fixed bottom-0 left-0 right-0 bg-white border-t-2 border-teal-100;
+            @apply backdrop-blur-md bg-opacity-95 z-50;
+        }
+
+        nav a {
+            @apply flex flex-col items-center gap-2 py-4 px-6 text-center;
+            @apply text-gray-600 transition-all duration-300 flex-1;
+        }
+
+        nav a.active {
+            @apply text-teal-700 font-bold;
         }
     </style>
-    {% block extra_css %}{% endblock %}
 </head>
-<body class="pb-40">
-    {% block content %}{% endblock %}
-    
-    <!-- Navigation Bar -->
-    <div class="navbar-bottom">
-        <a href="{{ url_for('main.dashboard') }}" class="nav-item {% if request.endpoint == 'main.dashboard' %}active{% endif %}">
-            <span class="nav-icon">🏠</span>
-            <span>Beranda</span>
-        </a>
-        <a href="{{ url_for('main.catat_kegiatan') }}" class="nav-item {% if request.endpoint == 'main.catat_kegiatan' %}active{% endif %}">
-            <span class="nav-icon">✍️</span>
-            <span>Catat</span>
-        </a>
-        <a href="{{ url_for('main.jadwal') }}" class="nav-item {% if request.endpoint == 'main.jadwal' %}active{% endif %}">
-            <span class="nav-icon">📅</span>
-            <span>Jadwal</span>
-        </a>
-        <a href="{{ url_for('main.riwayat') }}" class="nav-item {% if request.endpoint == 'main.riwayat' %}active{% endif %}">
-            <span class="nav-icon">📜</span>
-            <span>Riwayat</span>
-        </a>
+<body>
+    <div class="pb-24">
+        {% block content %}{% endblock %}
     </div>
+
+    <!-- Navigation Bottom -->
+    <nav class="nav-bottom flex justify-around">
+        <a href="{{ url_for('main.dashboard') }}" class="active">
+            <span class="text-2xl">🏠</span>
+            <span class="text-xs font-bold">Beranda</span>
+        </a>
+        <a href="{{ url_for('main.catat_kegiatan') }}">
+            <span class="text-2xl">✍️</span>
+            <span class="text-xs font-bold">Catat</span>
+        </a>
+        <a href="{{ url_for('main.riwayat_kegiatan') }}">
+            <span class="text-2xl">📋</span>
+            <span class="text-xs font-bold">Riwayat</span>
+        </a>
+        <a href="{{ url_for('main.kelola_jadwal') }}">
+            <span class="text-2xl">📅</span>
+            <span class="text-xs font-bold">Jadwal</span>
+        </a>
+        <a href="{{ url_for('main.kelola_eksperimen') }}">
+            <span class="text-2xl">🧪</span>
+            <span class="text-xs font-bold">Eksperimen</span>
+        </a>
+    </nav>
 </body>
 </html>
